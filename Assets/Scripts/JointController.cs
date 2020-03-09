@@ -2,8 +2,8 @@
 
 public class JointController : MonoBehaviour
 {
-    public GameObject startRectangle;
-    public GameObject finishRectangle;
+    public Transform startRectangle;
+    public Transform finishRectangle;
 
     private void Start()
     {
@@ -13,21 +13,21 @@ public class JointController : MonoBehaviour
     //Change Line position, scale and rotation depending on locations joined Rectangles.
     public void LineUpdate()
     {
-        Transform transformStartRectangle = startRectangle.transform;
-        Transform transformFinishRectangle = finishRectangle.transform;
+        Transform transformStart = startRectangle.transform;
+        Transform transformFinish = finishRectangle.transform;
 
-        gameObject.transform.position = LinePosition(transformStartRectangle, transformFinishRectangle);
-        float lenghtLine = (transformStartRectangle.position - transformFinishRectangle.position).magnitude;
-        Vector3 scaleLine = gameObject.transform.localScale;
+        transform.position = LinePosition(transformStart, transformFinish);
+        float lenghtLine = (transformStart.position - transformFinish.position).magnitude;
+        Vector3 scaleLine = transform.localScale;
         scaleLine.x = lenghtLine;
-        gameObject.transform.localScale = scaleLine;
+        transform.localScale = scaleLine;
 
-        float angleRad = Mathf.Atan2(transformStartRectangle.position.y - transformFinishRectangle.position.y,
-            transformStartRectangle.position.x - transformFinishRectangle.position.x);
+        float angleRad = Mathf.Atan2(transformStart.position.y - transformFinish.position.y,
+            transformStart.position.x - transformFinish.position.x);
         float angleDeg = angleRad * Mathf.Rad2Deg;
         Quaternion angleRotation = new Quaternion();
         angleRotation.eulerAngles = new Vector3(0f, 0f, angleDeg);
-        gameObject.transform.rotation = angleRotation;
+        transform.rotation = angleRotation;
     }
 
     private Vector3 LinePosition(Transform transformStartRectangle, Transform transformFinishRectangle)

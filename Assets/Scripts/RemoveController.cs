@@ -5,49 +5,50 @@ using UnityEngine.EventSystems;
 public class RemoveController : MonoBehaviour, IPointerClickHandler
 {
 	private int _click;
-    private JointController _jointController;
+    private JointController _destroyingLine;
+    [SerializeField] private Type _type;
+
+    public enum Type {Rectangle, Line};
 
     //Destroy the gameObject and all links on its in joined gameObjects
     public void OnPointerClick(PointerEventData eventData)
     {
-        if (eventData.button == PointerEventData.InputButton.Left)
+        if (eventData.button != PointerEventData.InputButton.Left)
+            return;
+
+        _click = eventData.clickCount;
+
+        if (_click != 2)
+            return;
+
+        Remove();
+    }
+
+    private void Remove()
+    {           
+        if (_type == Type.Rectangle)
         {
-            _click = eventData.clickCount;
-
-            if (_click == 2)
+            var listLines = GetComponent<RectangleInfo>().listLines;
+            while (listLines.Count > 0)
             {
-                if (gameObject.TryGetComponent(out RectangleInfo rectangleInfo))
-                {
-                    List<GameObject> listLines = gameObject.GetComponent<RectangleInfo>().listLines;
-                    while (listLines.Count>0) 
-                    {
-                            GameObject destroyingLine = listLines[0];
-
-                            _jointController = destroyingLine.GetComponent<JointController>();
-                            RectangleInfo currentStartRectangleInfo = _jointController.startRectangle.GetComponent<RectangleInfo>();
-                            RectangleInfo currentFinishRectangleInfo = _jointController.finishRectangle.GetComponent<RectangleInfo>();
-                            List<GameObject> currentStartRectangleListLines = currentStartRectangleInfo.listLines;
-                            List<GameObject> currentFinishRectangleListLines = currentFinishRectangleInfo.listLines;
-
-                            LineDestroy(destroyingLine, currentStartRectangleListLines);
-                            LineDestroy(destroyingLine, currentFinishRectangleListLines);
-                    }
-                    Destroy(gameObject);
-                }
-                else
-                {
-                    _jointController = gameObject.GetComponent<JointController>();
-                    LineDestroy(gameObject, _jointController.startRectangle.GetComponent<RectangleInfo>().listLines);
-                    LineDestroy(gameObject, _jointController.finishRectangle.GetComponent<RectangleInfo>().listLines);
-                    Destroy(gameObject);
-                }
+                _destroyingLine = listLines[0];
+                LineDestroy(_destroyingLine.startRectangle.GetComponent<RectangleInfo>().listLines, _destroyingLine);
+                LineDestroy(_destroyingLine.finishRectangle.GetComponent<RectangleInfo>().listLines, _destroyingLine);
             }
+            Destroy(gameObject);
+        }
+        else
+        {
+               _destroyingLine = GetComponent<JointController>();
+               LineDestroy(_destroyingLine.startRectangle.GetComponent<RectangleInfo>().listLines, _destroyingLine);
+               LineDestroy(_destroyingLine.finishRectangle.GetComponent<RectangleInfo>().listLines, _destroyingLine);
+               Destroy(gameObject);
         }
     }
 
-    private void LineDestroy(GameObject destroyingLine, List<GameObject> currentListLines)
+    private void LineDestroy(List<JointController> currentListLines, JointController destroyingLine)
     {
         currentListLines.Remove(destroyingLine);
-        Destroy(destroyingLine);
+        Destroy(destroyingLine.gameObject);
     }
 }

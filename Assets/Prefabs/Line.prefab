@@ -88,6 +88,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 698ff1bace5fd66419682ecbac2cf7e7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _rectangleInfo: {fileID: 0}
+  _type: 1
 --- !u!61 &6083802279574551269
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -126,5 +128,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 63ff7d1f44bb81e43a43dcaa5f02fedf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _canvasTransform: {fileID: 0}
-  linePrefab: {fileID: 0}
+  startRectangle: {fileID: 0}
+  finishRectangle: {fileID: 0}

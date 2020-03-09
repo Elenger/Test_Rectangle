@@ -4,8 +4,8 @@ using UnityEngine.EventSystems;
 
 public class RectangleInfo : MonoBehaviour, IPointerClickHandler
 {
-    public static GameObject selectionStartRectangle;
-    public List<GameObject> listLines;
+    private static RectangleInfo selectionStartRectangle;
+    public List<JointController> listLines;
     public GameObject linePrefab;
     public Transform canvasTransform;
 
@@ -14,18 +14,20 @@ public class RectangleInfo : MonoBehaviour, IPointerClickHandler
     {
         if (eventData.button == PointerEventData.InputButton.Left)
         {
-            selectionStartRectangle = gameObject;
+            selectionStartRectangle = this;
         }
-        else if (eventData.button == PointerEventData.InputButton.Right && selectionStartRectangle != null 
-            && selectionStartRectangle!=gameObject && !_joinedLineExist)
+        else if (eventData.button == PointerEventData.InputButton.Right
+            && selectionStartRectangle != null
+            && selectionStartRectangle != gameObject
+            && !_joinedLineExist)
         {
             GameObject newLine = Instantiate(linePrefab, new Vector3().normalized, Quaternion.identity, canvasTransform);
-            JointController jointControllernewLine = newLine.GetComponent<JointController>();
-            jointControllernewLine.startRectangle = selectionStartRectangle;
-            jointControllernewLine.finishRectangle = gameObject;
+            JointController newJointController = newLine.GetComponent<JointController>();
+            newJointController.startRectangle = selectionStartRectangle.transform;
+            newJointController.finishRectangle = transform;
 
-            selectionStartRectangle.GetComponent<RectangleInfo>().listLines.Add(newLine);
-            listLines.Add(newLine);
+            selectionStartRectangle.listLines.Add(newJointController);
+            listLines.Add(newJointController);
 
             selectionStartRectangle = null;
         }
@@ -40,7 +42,7 @@ public class RectangleInfo : MonoBehaviour, IPointerClickHandler
         get
         {
             bool joinedLineExist = false;
-            foreach (GameObject line in selectionStartRectangle.GetComponent<RectangleInfo>().listLines)
+            foreach (var line in selectionStartRectangle.listLines)
             {
                 if (listLines.Contains(line))
                 {

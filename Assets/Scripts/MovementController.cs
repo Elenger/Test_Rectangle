@@ -9,14 +9,14 @@ public class MovementController : MonoBehaviour, IDragHandler
     private LayerMask _maskImmobilizedRectangle;
     private int _layerImmobilizedRectangle;
     private int _layerDraggingRectangle;
-    private List<GameObject> _listLines;
+    private List<JointController> _listLines;
 
     private void Start()
     {
         _maskImmobilizedRectangle = LayerMask.GetMask("ImmobilizedRectangle");
         _layerImmobilizedRectangle = LayerMask.NameToLayer("ImmobilizedRectangle");
         _layerDraggingRectangle = LayerMask.NameToLayer("DraggingRectangle");
-        _listLines = gameObject.GetComponent<RectangleInfo>().listLines;
+        _listLines = GetComponent<RectangleInfo>().listLines;
     }
     public void OnDrag(PointerEventData eventData)
     {
@@ -35,13 +35,13 @@ public class MovementController : MonoBehaviour, IDragHandler
             Collider2D obstructionCollider = Physics2D.OverlapArea(topLeftCorner, bottomRightCorner, _maskImmobilizedRectangle);
             if (obstructionCollider == null)
             {
-                gameObject.transform.position = mouseGlob;
+                transform.position = mouseGlob;
             }
 
             //If selected Rectangle has joined line, then changing the line when Rectangle moves
             if (_listLines != null)
             {
-                foreach (GameObject line in _listLines)
+                foreach (var line in _listLines)
                 {
                     line.GetComponent<JointController>().LineUpdate();
                 }
