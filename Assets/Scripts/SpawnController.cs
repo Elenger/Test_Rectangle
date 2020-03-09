@@ -21,7 +21,7 @@ public class SpawnController : MonoBehaviour
         {
             Vector2 mouse = Input.mousePosition;
             Vector2 mouseGlob = Camera.main.ScreenToWorldPoint(mouse);
-                                                                       
+
             Vector2 topLeftCorner = new Vector2(mouseGlob.x - _halfWidthRectangle,
                 mouseGlob.y + _halfHeightRectangle);
             Vector2 bottomRightCorner = new Vector2(mouseGlob.x + _halfWidthRectangle,

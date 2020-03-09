@@ -43,7 +43,7 @@ public class MovementController : MonoBehaviour, IDragHandler
             {
                 foreach (var line in _listLines)
                 {
-                    line.GetComponent<JointController>().LineUpdate();
+                    line.LineUpdate();
                 }
             }
         }

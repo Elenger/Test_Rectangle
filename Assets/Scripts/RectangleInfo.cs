@@ -4,7 +4,7 @@ using UnityEngine.EventSystems;
 
 public class RectangleInfo : MonoBehaviour, IPointerClickHandler
 {
-    private static RectangleInfo selectionStartRectangle;
+    private static RectangleInfo startRectangle;
     public List<JointController> listLines;
     public GameObject linePrefab;
     public Transform canvasTransform;
@@ -14,26 +14,23 @@ public class RectangleInfo : MonoBehaviour, IPointerClickHandler
     {
         if (eventData.button == PointerEventData.InputButton.Left)
         {
-            selectionStartRectangle = this;
+            startRectangle = this;
         }
         else if (eventData.button == PointerEventData.InputButton.Right
-            && selectionStartRectangle != null
-            && selectionStartRectangle != gameObject
+            && startRectangle != null
+            && startRectangle != gameObject
             && !_joinedLineExist)
         {
             GameObject newLine = Instantiate(linePrefab, new Vector3().normalized, Quaternion.identity, canvasTransform);
             JointController newJointController = newLine.GetComponent<JointController>();
-            newJointController.startRectangle = selectionStartRectangle.transform;
+            newJointController.startRectangle = startRectangle.transform;
             newJointController.finishRectangle = transform;
+            newJointController.startRectangleInfo = startRectangle;
+            newJointController.finishRectangleInfo = this;
 
-            selectionStartRectangle.listLines.Add(newJointController);
+
+            startRectangle.listLines.Add(newJointController);
             listLines.Add(newJointController);
-
-            selectionStartRectangle = null;
-        }
-        else if (eventData.button == PointerEventData.InputButton.Middle)
-        {
-            selectionStartRectangle = null;
         }
     }
 
@@ -42,7 +39,7 @@ public class RectangleInfo : MonoBehaviour, IPointerClickHandler
         get
         {
             bool joinedLineExist = false;
-            foreach (var line in selectionStartRectangle.listLines)
+            foreach (var line in startRectangle.listLines)
             {
                 if (listLines.Contains(line))
                 {
